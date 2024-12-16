@@ -34,10 +34,10 @@ const sendEmail = async (formData, file) => {
         to: process.env.EMAIL_USER,
         subject: 'Novo Cadastro do Formulário',
         text: `
-            Nome: ${formData.name}
-            Endereço: ${formData.address}
-            Data de Nascimento: ${formData.dob}
-            CPF: ${formData.cpf}
+            Nome: ${formData.name || 'Não fornecido'}
+            Endereço: ${formData.address || 'Não fornecido'}
+            Data de Nascimento: ${formData.dob || 'Não fornecido'}
+            CPF: ${formData.cpf || 'Não fornecido'}
         `,
         attachments: file
             ? [
@@ -64,9 +64,14 @@ app.post('/send-data', upload.single('rg'), async (req, res) => {
     const formData = req.body; // Os dados do formulário
     const file = req.file; // O arquivo enviado
 
-    // Garantir que todos os dados estejam presentes
-    console.log('FormData:', formData);
-    console.log('File:', file);
+    // Verifique se os dados do formulário e o arquivo foram recebidos corretamente
+    console.log('FormData:', formData); // Logs para depuração
+    console.log('File:', file); // Logs para depuração
+
+    // Se houver erro com os dados
+    if (!formData.name || !formData.address || !formData.dob || !formData.cpf) {
+        return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
+    }
 
     try {
         const emailSent = await sendEmail(formData, file);

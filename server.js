@@ -1,10 +1,8 @@
 require('dotenv').config(); // Carrega variáveis de ambiente
 const express = require('express');
 const nodemailer = require('nodemailer');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer'); // Para lidar com uploads de arquivos
-const path = require('path');
 
 // Configuração do servidor
 const app = express();
@@ -12,8 +10,6 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public')); // Diretório de arquivos estáticos
 
 // Configuração para upload de arquivos (RG)
@@ -65,8 +61,12 @@ const sendEmail = async (formData, file) => {
 
 // Rota para receber os dados do formulário
 app.post('/send-data', upload.single('rg'), async (req, res) => {
-    const formData = req.body;
-    const file = req.file;
+    const formData = req.body; // Os dados do formulário
+    const file = req.file; // O arquivo enviado
+
+    // Garantir que todos os dados estejam presentes
+    console.log('FormData:', formData);
+    console.log('File:', file);
 
     try {
         const emailSent = await sendEmail(formData, file);

@@ -11,6 +11,8 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.static('public')); // Diretório de arquivos estáticos
+app.use(express.urlencoded({ extended: true })); // Para lidar com dados de formulários
+app.use(express.json()); // Para garantir que dados JSON sejam tratados corretamente
 
 // Configuração para upload de arquivos (RG)
 const upload = multer({
@@ -64,9 +66,9 @@ app.post('/send-data', upload.single('rg'), async (req, res) => {
     const formData = req.body; // Os dados do formulário
     const file = req.file; // O arquivo enviado
 
-    // Verifique se os dados do formulário e o arquivo foram recebidos corretamente
-    console.log('FormData:', formData); // Logs para depuração
-    console.log('File:', file); // Logs para depuração
+    // Log para depuração
+    console.log('FormData:', formData);
+    console.log('File:', file);
 
     // Se houver erro com os dados
     if (!formData.name || !formData.address || !formData.dob || !formData.cpf) {
